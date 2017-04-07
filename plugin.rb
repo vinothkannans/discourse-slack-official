@@ -177,6 +177,10 @@ after_initialize do
       user = User.find_by(username: SiteSetting.slack_discourse_username)
       TopicView.new(topic_id, user, post_number: post_number)
     end
+
+    def messages
+      render json: DiscourseSlack::Slack.messages(params.require(:channel))
+    end
   end
 
   if !PluginStore.get(DiscourseSlack::PLUGIN_NAME, "not_first_time") && !Rails.env.test?
@@ -201,6 +205,8 @@ after_initialize do
     put "/reset_settings" => "slack#reset_settings", constraints: AdminConstraint.new
     put "/list" => "slack#edit", constraints: AdminConstraint.new
     delete "/list" => "slack#delete", constraints: AdminConstraint.new
+
+    get "/messages" => "slack#messages", constraints: AdminConstraint.new
   end
 
   Discourse::Application.routes.prepend do
