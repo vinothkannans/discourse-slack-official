@@ -179,7 +179,7 @@ after_initialize do
     end
 
     def messages
-      render json: DiscourseSlack::Slack.messages(params.require(:channel))
+      render json: DiscourseSlack::Slack.messages(params.require(:channel), params.require(:count))
     end
   end
 

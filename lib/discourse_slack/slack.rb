@@ -218,7 +218,7 @@ module DiscourseSlack
     end
 
     def self.channels
-      return nil if SiteSetting.slack_access_token.empty?
+      return [] if SiteSetting.slack_access_token.empty?
 
       @channels = Rails.cache.fetch("slack_channels", expires_in: 15.minutes) do
         http = Net::HTTP.new("slack.com" , 443)
@@ -240,7 +240,7 @@ module DiscourseSlack
       @channels
     end
 
-    def self.messages(channel_name)
+    def self.messages(channel_name, count)
       return { "error": I18n.t('slack.errors.access_token_is_empty') } if SiteSetting.slack_access_token.empty?
 
       http = Net::HTTP.new("slack.com" , 443)
@@ -252,7 +252,8 @@ module DiscourseSlack
 
       uri = URI("https://slack.com/api/channels.history" +
         "?token=#{ SiteSetting.slack_access_token }" +
-        "&channel=#{ channel["id"] }"
+        "&channel=#{ channel["id"] }" +
+        "&count=#{ count }"
       )
 
       response = http.request(Net::HTTP::Get.new(uri))
