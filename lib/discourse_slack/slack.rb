@@ -224,13 +224,13 @@ module DiscourseSlack
         http = Net::HTTP.new("slack.com" , 443)
         http.use_ssl = true
 
-        uri = URI("https://slack.com/api/channels.list" +
-          "?token=#{ SiteSetting.slack_access_token }"
-        )
+        uri = URI("https://slack.com/api/channels.list?token=%{token}" % {
+            token: SiteSetting.slack_access_token
+          })
 
         response = http.request(Net::HTTP::Get.new(uri))
 
-        if response
+        if response && response.code == "200"
           JSON.parse(response.body)["channels"]
         else
           []
@@ -250,15 +250,15 @@ module DiscourseSlack
 
       return { "error": I18n.t('slack.errors.channel_not_found') } unless channel.present?
 
-      uri = URI("https://slack.com/api/channels.history" +
-        "?token=#{ SiteSetting.slack_access_token }" +
-        "&channel=#{ channel["id"] }" +
-        "&count=#{ count }"
-      )
+      uri = URI("https://slack.com/api/channels.history?token=%{token}&channel=%{channel}&count=%{count}" % {
+          token: SiteSetting.slack_access_token,
+          channel: channel["id"],
+          count: count
+        })
 
       response = http.request(Net::HTTP::Get.new(uri))
 
-      return response.body if response
+      return response.body if response && response.code == "200"
 
       { "error": I18n.t('slack.errors.invalid_response') }
     end
