@@ -1,0 +1,47 @@
+<div class="ts-message">
+  <div class="message_gutter">
+    {{#member_image}}
+      <div class="message_icon">
+        <a class="member_image thumb_36" target="_blank" style="background-image: url('{{member_image}}');"></a>
+      </div>
+    {{/member_image}}
+  </div>
+  <div class="message_content">
+    <div class="message_content_header">
+      <div class="message_content_header_left">
+        {{#sender}}
+          <a class="message_sender" target="_blank">{{sender}}</a>
+        {{/sender}}
+        <a href="{{link}}" class="timestamp ts_tip" target="_blank">{{timestamp}}</a>
+      </div>
+    </div>
+    <span class="message_body">{{text}}</span>
+    {{#attachments}}
+      {{#pretext}}<div class="attachment_pretext">{{pretext}}</div>{{/pretext}}
+      <div class="attachment_group">
+        <div class="inline_attachment">
+          <div class="attachment_column column_border"{{#color}} style="background-color: {{color}}; background-color: #{{color}};"{{/color}}></div>
+          <div class="attachment_column column_content">
+            <div class="attachment_row attachment_flush attachment_source">
+              <a{{#author_link}}href="{{author_link}}" rel="noreferrer" target="_blank"{{/author_link}}>
+                {{#author_icon}}<img class="attachment_source_icon" src="{{author_icon}}" alt="">{{/author_icon}}
+                {{#author_name}}<span class="attachment_source_name">{{author_name}}</span>{{/author_name}}
+                {{#service_icon}}<img class="attachment_source_icon" src="{{service_icon}}" alt="">{{/service_icon}}
+                {{#service_name}}<span class="attachment_source_name">{{service_name}}</span>{{/service_name}}
+              </a>
+            </div>
+            <div class="attachment_row attachment_flush">
+              <div class="attachment_title">
+                {{#title}}<a href="{{title_link}}" rel="noreferrer" target="_blank">{{title}}</a>{{/title}}
+              </div>
+              {{text}}
+            </div>
+            <div class="attachment_row attachment_media">
+              {{#image_url}}<a href="{{image_url}}" rel="noreferrer" target="_blank">{{/image_url}}<img src="{{thumb_url}}" class="attachment_thumb">{{#image_url}}</a>{{/image_url}}
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/attachments}}
+  </div>
+</div>

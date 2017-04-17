@@ -6,12 +6,17 @@
 
 enabled_site_setting :slack_enabled
 
+register_asset "stylesheets/slack.scss"
 register_asset "stylesheets/slack-admin.scss"
 
 load File.expand_path('../lib/validators/discourse_slack_enabled_setting_validator.rb', __FILE__)
 
+load File.expand_path('../lib/onebox/engine/slack_archive_onebox.rb', __FILE__)
+Onebox.options.load_paths.push(File.join(File.dirname(__FILE__), "templates"))
+
 after_initialize do
   load File.expand_path('../lib/discourse_slack/slack.rb', __FILE__)
+  load File.expand_path('../lib/discourse_slack/api.rb', __FILE__)
 
   module ::DiscourseSlack
     PLUGIN_NAME = "discourse-slack-official".freeze
