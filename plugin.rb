@@ -7,7 +7,7 @@
 enabled_site_setting :slack_enabled
 
 register_asset "stylesheets/slack.scss"
-register_asset "stylesheets/slack-admin.scss"
+register_asset "stylesheets/slack-admin.scss", :admin
 
 load File.expand_path('../lib/validators/discourse_slack_enabled_setting_validator.rb', __FILE__)
 
