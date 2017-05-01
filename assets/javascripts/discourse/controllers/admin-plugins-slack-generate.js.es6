@@ -31,7 +31,7 @@ export default Ember.Controller.extend({
       }).then(result => {
         var html = "";
         result.messages.map(m => html += Message.create(m).html());
-        this.openComposer("test", html, 4);
+        this.openComposer("", html, 4);
       });
     }
 
