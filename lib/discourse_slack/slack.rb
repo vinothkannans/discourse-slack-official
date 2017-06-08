@@ -227,5 +227,10 @@ module DiscourseSlack
 
       responses
     end
+
+    def self.sync
+      DiscourseSlack::API.sync_channels
+      DiscourseSlack::API.sync_users
+    end
   end
 end

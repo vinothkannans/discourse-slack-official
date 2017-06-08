@@ -17,7 +17,7 @@ module DiscourseSlack
 
       return JSON(response.body) if response && response.code == "200"
 
-      { "error": I18n.t('slack.errors.invalid_response') }
+      response.body
     end
 
     def self.api_uri(method, params = {})
@@ -25,35 +25,32 @@ module DiscourseSlack
       URI("#{BASE_URL}#{method}?#{params.to_query}")
     end
 
-    def self.channels
-      return [] if SiteSetting.slack_access_token.empty?
+    def self.sync_channels
+      return if SiteSetting.slack_access_token.empty?
 
-      @channels = Rails.cache.fetch("slack_channels", expires_in: 15.minutes) do
-        result = get_request(api_uri("channels.list"))
-        result["error"].present? ? [] : result
+      result = get_request(api_uri("channels.list"))
+      return unless result["channels"].present?
+
+      channels = Hash.new
+      result["channels"].each do |c|
+        channels[c["id"]] = c
       end
 
-      Rails.cache.delete("slack_channels") if @channels.blank?
-
-      @channels
+      PluginStore.set(DiscourseSlack::PLUGIN_NAME, "slack_channels", channels)
     end
 
-    def self.users
-      return [] if SiteSetting.slack_access_token.empty?
+    def self.sync_users
+      return if SiteSetting.slack_access_token.empty?
 
-      @users = Rails.cache.fetch("slack_users", expires_in: 12.hours) do
-        users = Hash.new
-        result = get_request(api_uri("users.list"))
-        members = result["error"].present? ? [] : result["members"]
-        members.each do |member|
-          users[member["id"]] = member
-        end
-        users
+      result = get_request(api_uri("users.list"))
+      return unless result["members"].present?
+
+      users = Hash.new
+      result["members"].each do |m|
+        users[m["id"]] = m
       end
 
-      Rails.cache.delete("slack_users") if @users.blank?
-
-      @users
+      PluginStore.set(DiscourseSlack::PLUGIN_NAME, "slack_users", users)
     end
 
     def self.messages(channel, count)
